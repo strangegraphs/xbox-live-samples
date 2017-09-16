@@ -52,6 +52,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
@@ -127,8 +128,20 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>5.4.0</Version>
+    <PackageReference Include="Microsoft.Xbox.Live.SDK.WinRT.UWP">
+      <Version>2017.8.20170829.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Xbox.Live.SDK.WinRT.UWP.Native.Debug">
+      <Version>2017.8.20170829.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Xbox.Live.SDK.WinRT.UWP.Native.Release">
+      <Version>2017.8.20170829.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Xbox.Live.SDK.WinRT.UWP.Netcore.Debug">
+      <Version>2017.8.20170829.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Xbox.Live.SDK.WinRT.UWP.Netcore.Release">
+      <Version>2017.8.20170829.1</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

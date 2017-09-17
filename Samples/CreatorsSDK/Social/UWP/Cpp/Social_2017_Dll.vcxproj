@@ -215,6 +215,7 @@
     <ClInclude Include="..\..\..\..\Kits\ATGTK\CSVReader.h" />
     <ClInclude Include="..\..\..\..\Kits\ATGTK\SampleGUI.h" />
     <ClInclude Include="..\..\..\..\Kits\ATGTK\TextConsole.h" />
+    <ClInclude Include="DllResources.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Social.h" />
     <ClInclude Include="LiveResources.h" />
@@ -226,6 +227,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Kits\ATGTK\SampleGUI.cpp" />
     <ClCompile Include="..\..\..\..\Kits\ATGTK\TextConsole.cpp" />
+    <ClCompile Include="DllResources.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Social.cpp" />
     <ClCompile Include="LiveResources.cpp" />

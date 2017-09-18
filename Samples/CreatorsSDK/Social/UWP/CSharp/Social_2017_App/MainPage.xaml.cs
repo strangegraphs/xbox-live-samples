@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.Xbox.Services.System;
+using Social_2017.XboxLiveUwpImplementations;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -25,6 +28,27 @@ namespace Social_2017_App
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        public async Task<bool> SignInUser()
+        {
+            try
+            {
+                XboxLiveUwpImplementation xboxSocialObject = new XboxLiveUwpImplementation();
+                XboxLiveUser xboxLiveUser = new XboxLiveUser();
+                var xboxLiveContext = new Microsoft.Xbox.Services.XboxLiveContext(xboxLiveUser);
+                return await xboxSocialObject.SignInXboxUser(this, xboxLiveContext);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return false;
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            await SignInUser();
         }
     }
 }

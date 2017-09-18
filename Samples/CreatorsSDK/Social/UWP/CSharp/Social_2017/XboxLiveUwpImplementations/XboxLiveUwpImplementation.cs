@@ -10,6 +10,8 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls;
 using System.Collections.Concurrent;
 using Microsoft.Xbox.Services.Social;
+using Microsoft.Xbox.Services.Statistics.Manager;
+using Microsoft.Xbox.Services.Leaderboard;
 
 namespace Social_2017.XboxLiveUwpImplementations
 {
@@ -56,10 +58,91 @@ namespace Social_2017.XboxLiveUwpImplementations
 
                 return await xboxLiveContext.ProfileService.GetUserProfileAsync(xboxLiveContext.User.XboxUserId);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return null;
             }
+        }
+
+        public async Task<List<XboxSocialRelationship>> GetSocialRelationshipsAsync(
+            Page page,
+            XboxLiveContext xboxLiveContext,
+            uint startIndex = 0,
+            uint maxFriendsToRetrieve = 10,
+            string serviceConfigurationId = "12200100-88da-4d8b-af88-e38f5d2a2bca",
+            string presenceId = "rpdemo")
+        {
+            PresenceData presenceData = new PresenceData(serviceConfigurationId, presenceId);
+            await xboxLiveContext.PresenceService.SetPresenceAsync(true, presenceData);
+
+            XboxSocialRelationshipResult relationshipResult = await xboxLiveContext.SocialService.GetSocialRelationshipsAsync(
+                SocialRelationship.All,
+                startIndex,
+                maxFriendsToRetrieve
+            );
+
+            List<XboxSocialRelationship> listOfRelationships = new List<XboxSocialRelationship>();
+            foreach (var xboxRelationship in relationshipResult.Items)
+            {
+                listOfRelationships.Add(xboxRelationship);
+            }
+
+            return listOfRelationships;
+        }
+
+        IReadOnlyList<string> GetStat(Page page, XboxLiveContext xboxLiveContext)
+        {
+            StatisticManager statisticManager = StatisticManager.SingletonInstance;
+            if (statisticManager == null)
+            {
+                return null;
+            }
+            return statisticManager.GetStatisticNames(xboxLiveContext.User);
+        }
+
+        public bool Scenario_WriteStat(Page page, XboxLiveContext xboxLiveContext, string statNameToChange = "HighScore", long statValue = 1002)
+        {
+            StatisticManager statisticManager = StatisticManager.SingletonInstance;
+            if (statisticManager == null)
+            {
+                return false;
+            }
+
+            statisticManager.SetStatisticIntegerData(xboxLiveContext.User, statNameToChange, statValue);
+            statisticManager.RequestFlushToService(xboxLiveContext.User);
+
+            return true;
+        }
+
+        public bool DeleteStat(Page page, XboxLiveContext xboxLiveContext, string statNameToDelete = "HighScore")
+        {
+            StatisticManager statisticManager = StatisticManager.SingletonInstance;
+            if (statisticManager == null)
+            {
+                return false;
+            }
+
+            statisticManager.DeleteStatistic(xboxLiveContext.User, statNameToDelete);
+            statisticManager.RequestFlushToService(xboxLiveContext.User);
+
+            return true;
+        }
+
+        public IReadOnlyList<string> Scenario_GetLeaderboard(Page page, XboxLiveContext xboxLiveContext, string statNameLeaderBoardIsBasedOn)
+        {
+            StatisticManager statisticManager = StatisticManager.SingletonInstance;
+            if (statisticManager == null)
+            {
+                return null;
+            }
+
+            LeaderboardQuery query = new LeaderboardQuery();
+
+            var statValue = statisticManager.GetStatistic(xboxLiveContext.User, statNameLeaderBoardIsBasedOn);
+            string name = statValue.Name;
+            var intValue = statValue.AsInteger;
+
+            statisticManager.GetLeaderboard(xboxLiveContext.User, statNameLeaderBoardIsBasedOn, query)
         }
     }
 }

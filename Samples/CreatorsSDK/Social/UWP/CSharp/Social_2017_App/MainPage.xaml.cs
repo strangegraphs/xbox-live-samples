@@ -40,8 +40,9 @@ namespace Social_2017_App
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             XboxLiveUwpImplementation xboxLiveImplementation = new XboxLiveUwpImplementation();
-            var systemUsers = xboxLiveImplementation.GetAllSystemUsers();
-            var xboxUsers = xboxLiveImplementation.ConvertSystemUsersToXboxUsers(systemUsers.Result, UIDispatcher);
+            var systemUsers = await xboxLiveImplementation.GetAllSystemUsers();
+            var xboxUsers = await xboxLiveImplementation.ConvertSystemUsersToXboxUsers(systemUsers, UIDispatcher);
+            var xboxContexts = xboxLiveImplementation.ConvertXboxUserListToXboxContextList(xboxUsers);
         }
     }
 }

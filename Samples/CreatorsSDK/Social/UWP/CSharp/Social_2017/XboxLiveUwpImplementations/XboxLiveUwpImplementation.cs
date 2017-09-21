@@ -158,10 +158,10 @@ namespace Social_2017.XboxLiveUwpImplementations
             return allUser.Where(user => (user.Type != Windows.System.UserType.LocalGuest || user.Type != Windows.System.UserType.RemoteGuest)).ToList();
         }
 
-        public List<XboxLiveUser> ConvertSystemUsersToXboxUsers(List<User> systemUsers, CoreDispatcher UIDispatcher)
+        public async Task<List<XboxLiveUser>> ConvertSystemUsersToXboxUsers(List<User> systemUsers, CoreDispatcher UIDispatcher)
         {
             List<XboxLiveUser> xboxLiveUserList = new List<XboxLiveUser>();
-            systemUsers.ForEach(async user =>
+            foreach (User user in systemUsers)
             {
                 try
                 {
@@ -175,7 +175,7 @@ namespace Social_2017.XboxLiveUwpImplementations
                 catch (Exception e)
                 {
                 }
-            });
+            }
 
             return xboxLiveUserList;
         }

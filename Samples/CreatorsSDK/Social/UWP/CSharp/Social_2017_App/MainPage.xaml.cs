@@ -1,4 +1,5 @@
-﻿using Microsoft.Xbox.Services.System;
+﻿using Microsoft.Xbox.Services;
+using Microsoft.Xbox.Services.System;
 using Social_2017.XboxLiveUwpImplementations;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,30 +28,20 @@ namespace Social_2017_App
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        CoreDispatcher UIDispatcher = null;
+
         public MainPage()
         {
             this.InitializeComponent();
+            UIDispatcher = Window.Current.CoreWindow.Dispatcher;
         }
 
-        public async Task<bool> SignInUser()
-        {
-            try
-            {
-                XboxLiveUwpImplementation xboxSocialObject = new XboxLiveUwpImplementation();
-                XboxLiveUser xboxLiveUser = new XboxLiveUser();
-                var xboxLiveContext = new Microsoft.Xbox.Services.XboxLiveContext(xboxLiveUser);
-                return await xboxSocialObject.SignInXboxUser(this, xboxLiveContext);
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return false;
-        }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            await SignInUser();
+            XboxLiveUwpImplementation xboxLiveImplementation = new XboxLiveUwpImplementation();
+            var systemUsers = xboxLiveImplementation.GetAllSystemUsers();
+            var xboxUsers = xboxLiveImplementation.ConvertSystemUsersToXboxUsers(systemUsers.Result, UIDispatcher);
         }
     }
 }

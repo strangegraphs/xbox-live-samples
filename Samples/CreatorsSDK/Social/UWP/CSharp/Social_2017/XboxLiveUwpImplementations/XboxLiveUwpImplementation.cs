@@ -13,6 +13,8 @@ using Microsoft.Xbox.Services.Social;
 using Microsoft.Xbox.Services.Statistics.Manager;
 using Microsoft.Xbox.Services.Leaderboard;
 using Microsoft.Xbox.Services.System;
+using Windows.System;
+using Windows.UI.Core;
 
 namespace Social_2017.XboxLiveUwpImplementations
 {
@@ -148,6 +150,46 @@ namespace Social_2017.XboxLiveUwpImplementations
             statisticManager.GetLeaderboard(xboxLiveContext.User, statNameLeaderBoardIsBasedOn, query);
 
             return query;
+        }
+
+        public async Task<List<User>> GetAllSystemUsers()
+        {
+            var allUser = await User.FindAllAsync();
+            return allUser.Where(user => (user.Type != Windows.System.UserType.LocalGuest || user.Type != Windows.System.UserType.RemoteGuest)).ToList();
+        }
+
+        public List<XboxLiveUser> ConvertSystemUsersToXboxUsers(List<User> systemUsers, CoreDispatcher UIDispatcher)
+        {
+            List<XboxLiveUser> xboxLiveUserList = new List<XboxLiveUser>();
+            systemUsers.ForEach(async user =>
+            {
+                try
+                {
+                    XboxLiveUser xboxUser = new XboxLiveUser(user);
+                    var signInResult = await xboxUser.SignInAsync(UIDispatcher);
+                    if (signInResult.Status == SignInStatus.Success)
+                    {
+                        xboxLiveUserList.Add(xboxUser);
+                    }
+                }
+                catch (Exception e)
+                {
+                }
+            });
+
+            return xboxLiveUserList;
+        }
+
+        public Dictionary<string, XboxLiveContext> ConvertXboxUserListToXboxContextList(List<XboxLiveUser> listXboxUsers)
+        {
+            Dictionary<string, XboxLiveContext> xboxliveContextsDictionary = new Dictionary<string, XboxLiveContext>();
+            foreach (XboxLiveUser xboxUser in listXboxUsers)
+            {
+                var xboxLiveContext = new XboxLiveContext(xboxUser);
+                xboxliveContextsDictionary.Add(xboxUser.WindowsSystemUser.NonRoamableId, xboxLiveContext);
+            }
+
+            return xboxliveContextsDictionary;
         }
     }
 }
